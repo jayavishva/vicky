@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - SanCatcher</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --accent: #22d3ee;
+    --success: #10b981;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+}
+
+/* Mobile Container */
+.app {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    background: var(--bg);
+    position: relative;
+}
+
+/* Header */
+.header {
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--muted);
+}
+
+/* Content */
+.content {
+    padding: 20px;
+    padding-bottom: 80px;
+}
+
+/* Card Section */
+.card {
+    background: var(--card);
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: var(--accent);
+}
+
+/* Input */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-size: 13px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--muted);
+    background: transparent;
+    color: var(--text);
+}
+
+/* Toggle Switch */
+.toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #555;
+    border-radius: 22px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: 0.3s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+input:checked + .slider {
+    background-color: var(--accent);
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px);
+}
+
+/* Textarea */
+textarea {
+    width: 100%;
+    height: 80px;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid var(--muted);
+    background: transparent;
+    color: var(--text);
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    margin-top: 10px;
+    background: var(--accent);
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 420px;
+    background: #111827;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1px solid var(--muted);
+}
+
+.bottom-nav div {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.bottom-nav .active {
+    color: var(--accent);
+}
+
+.status {
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+    <div class="header">Settings</div>
+
+    <div class="content">
+
+        <!-- Profile -->
+        <div class="card">
+            <h3>Profile</h3>
+
+            <div class="input-group">
+                <label>User ID</label>
+                <input type="text" value="SAN11109" readonly>
+            </div>
+
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="email" value="official.smart@gmail.com">
+            </div>
+
+            <button onclick="saveProfile()">Save Changes</button>
+        </div>
+
+        <!-- Security -->
+        <div class="card">
+            <h3>Security</h3>
+
+            <div class="toggle-row">
+                <span>Theft Alert</span>
+                <label class="switch">
+                    <input type="checkbox" id="alertToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-row">
+                <span>Intruder Capture</span>
+                <label class="switch">
+                    <input type="checkbox" id="cameraToggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <button onclick="updateSecurity()">Update</button>
+        </div>
+
+        <!-- Feedback -->
+        <div class="card">
+            <h3>Support</h3>
+
+            <textarea id="feedback" placeholder="Write your feedback..."></textarea>
+
+            <button onclick="submitFeedback()">Send</button>
+        </div>
+
+        <div class="status" id="statusMessage"></div>
+
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <div onclick="goHome()">🏠<br>Home</div>
+        <div>🛡<br>Security</div>
+        <div class="active">⚙<br>Settings</div>
+        <div onclick="finishSetup()">Finish Setup</button>
+    </div>
+    
+
+</div>
+<script src="auth.js"></script>
+
+<script>
+checkLogin();
+function saveProfile() {
+    const email = document.getElementById("email").value;
+    if(email.trim() === "") {
+        showStatus("Email cannot be empty.", false);
+        return;
+    }
+    showStatus("Profile updated.", true);
+}
+
+function updateSecurity() {
+    showStatus("Security updated.", true);
+}
+
+function submitFeedback() {
+    const feedback = document.getElementById("feedback").value;
+    if(feedback.trim() === "") {
+        showStatus("Feedback cannot be empty.", false);
+        return;
+    }
+    showStatus("Feedback sent.", true);
+    document.getElementById("feedback").value = "";
+}
+
+function showStatus(message, success) {
+    const status = document.getElementById("statusMessage");
+    status.innerText = message;
+    status.style.color = success ? "#10b981" : "#ef4444";
+}
+
+function goHome() {
+    alert("Navigate to Home Screen");
+}
+checkLogin(); // block direct access
+
+function finishSetup() {
+    sessionStorage.setItem("settingsDone", "true");
+    window.location.href = "activation.html";
+}
+
+</script>
+
+</body>
+</html>

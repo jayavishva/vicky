@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SanCatcher Security</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>SanCatcher</h1>
+        <p class="subtitle">Security Dashboard</p>
+
+        <div class="input-group">
+            <input type="email" id="email" required>
+            <label>Email</label>
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="password" required>
+            <label>Password</label>
+            <span class="toggle" onclick="togglePassword()">👁</span>
+        </div>
+
+        <button onclick="login()">Login</button>
+
+        <p id="error" class="error"></p>
+    </div>
+</div>
+<script src="auth.js"></script>
+<script>
+function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if(email === "admin@gmail.com" && password === "123456") {
+        sessionStorage.setItem("loggedIn", "true");
+        window.location.href = "settings.html";
+    } else {
+        document.getElementById("error").innerText = "Invalid credentials.";
+    }
+}
+</script>
+</body>
+</html>

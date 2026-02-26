@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activation - SanCatcher</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --accent: #22d3ee;
+    --success: #10b981;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+}
+
+.app {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top App Bar */
+.header {
+    padding: 18px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 18px;
+    border-bottom: 1px solid var(--muted);
+}
+
+/* Scrollable Content */
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Step Text */
+.subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* Permission Card */
+.permission {
+    background: var(--card);
+    padding: 18px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    border: 1px solid transparent;
+}
+
+.permission.active {
+    border: 1px solid var(--success);
+    background: rgba(16,185,129,0.08);
+}
+
+.permission-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.permission-header .icon {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+.permission h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.permission p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 15px;
+}
+
+.permission button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.permission button:active {
+    transform: scale(0.97);
+}
+
+/* Status */
+.status {
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+/* Bottom Continue Button */
+.footer {
+    padding: 15px;
+    border-top: 1px solid var(--muted);
+    background: var(--bg);
+}
+
+.continue {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    background: var(--success);
+    color: white;
+    opacity: 0.4;
+    cursor: not-allowed;
+    transition: 0.3s;
+}
+
+.continue.enabled {
+    opacity: 1;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+        Device Activation
+    </div>
+
+    <div class="content">
+
+        <div class="subtitle">
+            Step 2 of 3 – Enable required permissions
+        </div>
+
+        <!-- Location -->
+        <div class="permission" id="locationBox">
+            <div class="permission-header">
+                <div class="icon">📍</div>
+                <h3>Location Access</h3>
+            </div>
+            <p>Required to track device during theft.</p>
+            <button onclick="requestLocation()">Enable Location</button>
+        </div>
+
+        <!-- Camera -->
+        <div class="permission" id="cameraBox">
+            <div class="permission-header">
+                <div class="icon">📷</div>
+                <h3>Camera Access</h3>
+            </div>
+            <p>Capture intruder photo automatically.</p>
+            <button onclick="requestCamera()">Enable Camera</button>
+        </div>
+
+        <div class="status" id="statusText"></div>
+
+    </div>
+
+    <div class="footer">
+        <button class="continue" id="continueBtn" disabled onclick="finishActivation()">
+            Continue
+        </button>
+    </div>
+
+</div>
+<script src="auth.js"></script>
+
+<script>
+checkLogin();
+checkSettings();
+let locationGranted = false;
+let cameraGranted = false;
+
+function requestLocation() {
+    if (!navigator.geolocation) {
+        updateStatus("Geolocation not supported.", false);
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        () => {
+            locationGranted = true;
+            document.getElementById("locationBox").classList.add("active");
+            updateStatus("Location permission granted.", true);
+            checkCompletion();
+        },
+        () => updateStatus("Location permission denied.", false)
+    );
+}
+
+async function requestCamera() {
+    try {
+        await navigator.mediaDevices.getUserMedia({ video: true });
+        cameraGranted = true;
+        document.getElementById("cameraBox").classList.add("active");
+        updateStatus("Camera permission granted.", true);
+        checkCompletion();
+    } catch {
+        updateStatus("Camera permission denied.", false);
+    }
+}
+
+function updateStatus(message, success) {
+    const status = document.getElementById("statusText");
+    status.innerText = message;
+    status.style.color = success ? "#10b981" : "#ef4444";
+}
+
+function checkCompletion() {
+    if (locationGranted && cameraGranted) {
+        const btn = document.getElementById("continueBtn");
+        btn.disabled = false;
+        btn.classList.add("enabled");
+    }
+}
+
+function finishActivation() {
+    alert("Device Successfully Activated!");
+    window.location.href = "settings.html";
+}
+</script>
+
+</body>
+</html>
